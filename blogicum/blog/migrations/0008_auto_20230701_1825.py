@@ -6,7 +6,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('blog', '0007_comment'),
     ]
@@ -19,12 +18,18 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='comment',
             name='text',
-            field=models.TextField(default=django.utils.timezone.now, verbose_name='Текст'),
+            field=models.TextField(
+                default=django.utils.timezone.now, verbose_name='Текст'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='comment',
             name='post',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='blog.post'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='comments',
+                to='blog.post',
+            ),
         ),
     ]

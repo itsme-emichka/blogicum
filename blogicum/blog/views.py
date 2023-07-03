@@ -1,16 +1,31 @@
 from typing import Any, Dict
-from django import http
 from django.db.models.query import QuerySet
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+from django.shortcuts import (
+    render,
+    get_object_or_404,
+    redirect,
+)
 from django.http import HttpRequest, HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    UpdateView,
+    DeleteView,
+)
 from django.utils import timezone
 
 from blog.models import Post, User, Category
 from blog.forms import PostForm, UserForm, CommentForm
-from blog.utils import get_posts, PostDispatchMixin, CommentDispatchUrlMixin, PostListMixin, PostRedirectMixin
+from blog.utils import (
+    get_posts,
+    PostDispatchMixin,
+    CommentDispatchUrlMixin,
+    PostListMixin,
+    PostRedirectMixin,
+)
 
 
 class PostCreateView(LoginRequiredMixin, PostRedirectMixin, CreateView):
@@ -25,12 +40,16 @@ class PostCreateView(LoginRequiredMixin, PostRedirectMixin, CreateView):
 class PostDetailView(DetailView):
     model = Post
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         try:
             obj = Post.objects.select_related('author').get(pk=kwargs['pk'])
             print(obj.author.username)
             print(self.request.user.username)
-            if (not obj.is_published or obj.pub_date > timezone.now()) and obj.author.username != self.request.user.username:
+            if (
+                not obj.is_published or obj.pub_date > timezone.now()
+            ) and obj.author.username != self.request.user.username:
                 raise Http404('Поста с таким id не существует')
             else:
                 return super().dispatch(request, *args, **kwargs)
@@ -48,7 +67,9 @@ class PostUpdateView(LoginRequiredMixin, PostDispatchMixin, UpdateView):
     form_class = PostForm
 
 
-class PostDeleteView(LoginRequiredMixin, PostDispatchMixin, PostRedirectMixin, DeleteView):
+class PostDeleteView(
+    LoginRequiredMixin, PostDispatchMixin, PostRedirectMixin, DeleteView
+):
     template_name = 'blog/post_form.html'
 
 
@@ -64,16 +85,19 @@ def comment(request: HttpRequest, pk: int):
     return redirect('blog:post_detail', pk=pk)
 
 
-class CommentUpdateView(LoginRequiredMixin, CommentDispatchUrlMixin, UpdateView):
+class CommentUpdateView(
+    LoginRequiredMixin, CommentDispatchUrlMixin, UpdateView
+):
     form_class = CommentForm
 
 
-class CommentDeleteView(LoginRequiredMixin, CommentDispatchUrlMixin, DeleteView):
+class CommentDeleteView(
+    LoginRequiredMixin, CommentDispatchUrlMixin, DeleteView
+):
     pass
 
 
 class PostListView(PostListMixin, ListView):
-
     def get_queryset(self) -> QuerySet[Any]:
         return get_posts()
 
@@ -102,20 +126,22 @@ class ProfileListView(PostListMixin, ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         if self.request.user.username == self.kwargs['username']:
-            queryset = (
-                Post.objects.select_related('author')
-                .filter(author__username=self.kwargs['username'])
+            queryset = Post.objects.select_related('author').filter(
+                author__username=self.kwargs['username']
             )
         else:
             queryset = (
-                get_posts().select_related('author')
+                get_posts()
+                .select_related('author')
                 .filter(author__username=self.kwargs['username'])
             )
         return queryset
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['profile'] = get_object_or_404(User, username=self.kwargs['username'])
+        context['profile'] = get_object_or_404(
+            User, username=self.kwargs['username']
+        )
         return context
 
 

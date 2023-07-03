@@ -36,9 +36,16 @@ def get_posts_planned(username: str) -> QuerySet:
 class PostDispatchMixin:
     model = Post
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         try:
-            if self.request.user.username == Post.objects.select_related('author').get(id=self.kwargs['pk']).author.username:
+            if (
+                self.request.user.username
+                == Post.objects.select_related('author')
+                .get(id=self.kwargs['pk'])
+                .author.username
+            ):
                 return super().dispatch(request, *args, **kwargs)
             else:
                 return redirect('blog:post_detail', pk=self.kwargs['pk'])
@@ -51,9 +58,16 @@ class CommentDispatchUrlMixin:
     pk_url_kwarg = 'comment_id'
     template_name = 'blog/comment.html'
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         try:
-            if self.request.user.username == Comment.objects.select_related('author').get(id=self.kwargs['comment_id']).author.username:
+            if (
+                self.request.user.username
+                == Comment.objects.select_related('author')
+                .get(id=self.kwargs['comment_id'])
+                .author.username
+            ):
                 return super().dispatch(request, *args, **kwargs)
             else:
                 return redirect('blog:post_detail', pk=self.kwargs['pk'])
@@ -70,6 +84,7 @@ class PostListMixin:
 
 
 class PostRedirectMixin:
-
     def get_success_url(self) -> str:
-        return reverse('blog:profile', kwargs={'username': self.request.user.username})
+        return reverse(
+            'blog:profile', kwargs={'username': self.request.user.username}
+        )

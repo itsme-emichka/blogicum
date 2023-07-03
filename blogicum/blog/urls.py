@@ -1,5 +1,4 @@
-from django.urls import path, include
-from django.views.generic import CreateView
+from django.urls import path
 
 from blog import views
 from blog.apps import BlogConfig
@@ -52,11 +51,7 @@ urlpatterns = [
         views.PostCreateView.as_view(),
         name='create_post',
     ),
-    path(
-        'profile/edit/',
-        views.profile_edit,
-        name='edit_profile'
-    ),
+    path('profile/edit/', views.profile_edit, name='edit_profile'),
     path(
         'profile/<slug:username>/',
         views.ProfileListView.as_view(),
