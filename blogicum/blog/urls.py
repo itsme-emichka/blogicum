@@ -48,7 +48,7 @@ urlpatterns = [
         name='category_posts',
     ),
     path(
-        'create_post/',
+        'posts/create/',
         views.PostCreateView.as_view(),
         name='create_post',
     ),

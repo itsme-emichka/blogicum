@@ -126,7 +126,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'комментарии'
-        ordering = ('-created_at', )
+        ordering = ('created_at', )
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', kwargs={'pk': self.kwargs['pk']})
