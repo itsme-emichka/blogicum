@@ -49,7 +49,7 @@ class PostDispatchMixin:
                 return super().dispatch(request, *args, **kwargs)
             else:
                 return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except:
+        except Exception:
             raise Http404
 
 
@@ -71,7 +71,7 @@ class CommentDispatchUrlMixin:
                 return super().dispatch(request, *args, **kwargs)
             else:
                 return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except:
+        except Exception:
             raise Http404('Такого комментария не существует')
 
     def get_success_url(self) -> str:

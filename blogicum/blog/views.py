@@ -53,7 +53,7 @@ class PostDetailView(DetailView):
                 raise Http404('Поста с таким id не существует')
             else:
                 return super().dispatch(request, *args, **kwargs)
-        except:
+        except Exception:
             raise Http404('Поста с таким id не существует')
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
