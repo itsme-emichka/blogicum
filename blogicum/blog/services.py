@@ -1,6 +1,9 @@
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.db import models
+from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 
 from blog.models import Post
 
@@ -43,3 +46,31 @@ def get_object(
 def get_author(model: type[models.Model], pk: int) -> str:
     author = model.objects.select_related('author').get(id=pk).author.username
     return author
+
+
+def validate_user(func):
+    def wrapper(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
+        try:
+            if 'comment_id' in self.kwargs:
+                if self.request.user.username == get_author(
+                    model=self.model,
+                    pk=self.kwargs['comment_id'],
+                ):
+                    return func(self, request, *args, **kwargs)
+                return redirect('blog:post_detail', pk=self.kwargs['pk'])
+            else:
+                if self.request.user.username == get_author(
+                    model=self.model,
+                    pk=self.kwargs['pk'],
+                ):
+                    return func(self, request, *args, **kwargs)
+                return redirect('blog:post_detail', pk=self.kwargs['pk'])
+        except ObjectDoesNotExist:
+            raise Http404('Страницы не существует')
+
+    return wrapper

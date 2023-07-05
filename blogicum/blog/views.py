@@ -28,6 +28,7 @@ from blog.services import (
     get_profile_posts,
     get_author,
     get_object,
+    validate_user,
 )
 
 
@@ -79,31 +80,17 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
 
+    @validate_user
     def get(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Post,
-                pk=self.kwargs['pk'],
-            ):
-                return super().get(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого поста не существует')
+        return super().get(request, *args, **kwargs)
 
+    @validate_user
     def post(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Post,
-                pk=self.kwargs['pk'],
-            ):
-                return super().post(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого поста не существует')
+        return super().post(request, *args, **kwargs)
 
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
@@ -115,31 +102,17 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
             'blog:profile', kwargs={'username': self.request.user.username}
         )
 
+    @validate_user
     def get(
-        self, request: HttpRequest, *args: str, **kwargs: Any
+        self, request: HttpRequest, *args: Any, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Post,
-                pk=self.kwargs['pk'],
-            ):
-                return super().get(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого поста не существует')
+        return super().get(request, *args, **kwargs)
 
+    @validate_user
     def post(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Post,
-                pk=self.kwargs['pk'],
-            ):
-                return super().post(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого поста не существует')
+        return super().post(request, *args, **kwargs)
 
 
 @login_required
@@ -163,31 +136,17 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self) -> str:
         return reverse('blog:post_detail', kwargs={'pk': self.kwargs['pk']})
 
+    @validate_user
     def get(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Comment,
-                pk=self.kwargs['comment_id'],
-            ):
-                return super().get(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого комментария не существует')
+        return super().get(request, *args, **kwargs)
 
+    @validate_user
     def post(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Comment,
-                pk=self.kwargs['comment_id'],
-            ):
-                return super().post(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого комментария не существует')
+        return super().post(request, *args, **kwargs)
 
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
@@ -198,31 +157,17 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self) -> str:
         return reverse('blog:post_detail', kwargs={'pk': self.kwargs['pk']})
 
+    @validate_user
     def get(
-        self, request: HttpRequest, *args: str, **kwargs: Any
+        self, request: HttpRequest, *args: Any, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Comment,
-                pk=self.kwargs['comment_id'],
-            ):
-                return super().get(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого комментария не существует')
+        return super().get(request, *args, **kwargs)
 
+    @validate_user
     def post(
         self, request: HttpRequest, *args: str, **kwargs: Any
     ) -> HttpResponse:
-        try:
-            if self.request.user.username == get_author(
-                model=Comment,
-                pk=self.kwargs['comment_id'],
-            ):
-                return super().post(request, *args, **kwargs)
-            return redirect('blog:post_detail', pk=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise Http404('Такого комментария не существует')
+        return super().post(request, *args, **kwargs)
 
 
 class PostListView(ListView):
