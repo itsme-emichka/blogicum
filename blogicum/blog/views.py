@@ -26,7 +26,6 @@ from blog.services import (
     get_posts,
     get_category_posts,
     get_profile_posts,
-    get_author,
     get_object,
     validate_user,
 )
