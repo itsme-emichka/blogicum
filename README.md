@@ -14,9 +14,9 @@
 
 ## Автор:
 
-Эмилар Локтев  
-@itsme_emichka  
-emilar-l@yandex.ru  
+**Имя:** Эмилар Локтев  
+**Почта:** emilar-l@yandex.ru  
+**Telegram:** @itsme_emichka  
 
 ## Как запустить проект
 1. **Клонировать репозиторий**  
