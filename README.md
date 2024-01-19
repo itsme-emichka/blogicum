@@ -9,7 +9,6 @@
 
 ## Стек технологий
 - Django
-- DRF Simple JWT
 - SQLite
 - Bootstrap
 
